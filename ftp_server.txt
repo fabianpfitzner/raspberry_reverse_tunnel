@@ -1,0 +1,101 @@
+# FTP Server Setup (Optional)
+# ============================
+# Instructions for setting up an FTP server on Raspberry Pi using ProFTPD.
+# This is optional and not required for the VPN setup.
+#
+# Reference: https://makesmart.net/raspberry-pi-ftp-server-installieren/
+
+# ============================================================================
+# Installation
+# ============================================================================
+
+# Install ProFTPD (lightweight FTP server)
+sudo apt install proftpd-basic
+
+# During installation, you may be asked to choose between:
+# - standalone: FTP server runs as a daemon (recommended for always-on server)
+# - inetd: FTP server starts on-demand (better for occasional use)
+# Choose "standalone" for typical Raspberry Pi VPN server use.
+
+# ============================================================================
+# Configuration
+# ============================================================================
+
+# Create a custom FTP configuration file
+sudo nano /etc/proftpd/conf.d/myftp.conf
+
+# Add the following configuration to the file:
+
+# --- BEGIN CONFIGURATION ---
+
+# Restrict users to their home directory
+# Users in groups 'myftp' and 'root' will be confined to their home directory (~)
+# This prevents FTP users from browsing the entire filesystem
+DefaultRoot ~ myftp,root
+
+# Limit login access to specific group
+# Only users in the 'myftp' group are allowed to log in via FTP
+# This adds an extra layer of security
+<Limit LOGIN>
+    DenyGroup !myftp
+</Limit>
+
+# --- END CONFIGURATION ---
+
+# ============================================================================
+# Service Management
+# ============================================================================
+
+# Restart ProFTPD to apply configuration changes
+sudo systemctl restart proftpd
+
+# Enable ProFTPD to start on boot (if not already enabled)
+# sudo systemctl enable proftpd
+
+# Check ProFTPD service status
+# sudo systemctl status proftpd
+
+# ============================================================================
+# User Management
+# ============================================================================
+
+# Create the 'myftp' group for FTP users
+sudo addgroup myftp
+
+# Add existing user to the FTP group
+# sudo usermod -a -G myftp username
+
+# Create a new user and add to FTP group
+# sudo adduser ftpuser
+# sudo usermod -a -G myftp ftpuser
+
+# ============================================================================
+# Security Considerations
+# ============================================================================
+
+# WARNING: FTP transmits credentials in plain text!
+# Consider using SFTP (SSH File Transfer Protocol) instead for better security.
+# SFTP is already available if you have SSH enabled (no additional setup needed).
+
+# To use SFTP instead of FTP:
+# sftp pi@192.168.xxx.xxx
+# or through the reverse tunnel:
+# sftp -P 10022 username@remote_server
+
+# ============================================================================
+# Testing FTP Connection
+# ============================================================================
+
+# Test FTP connection locally
+# ftp localhost
+
+# Test from another machine on the network
+# ftp 192.168.xxx.xxx
+
+# Test FTP commands:
+# - ls          : list files
+# - cd dirname  : change directory
+# - get filename: download file
+# - put filename: upload file
+# - quit        : exit FTP session
+sudo adduser pi myftp

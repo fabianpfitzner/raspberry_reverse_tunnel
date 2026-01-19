@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Reverse SSH Tunnel Startup Script
+# ==================================
+# This script creates a persistent reverse SSH tunnel using autossh.
+# The tunnel allows remote access to your Raspberry Pi through a public server
+# without requiring port forwarding on your local network.
+#
+# IMPORTANT: Configure the following values before using this script:
+# - REMOTE_USER: Your username on the remote server
+# - REMOTE_HOST: Your remote server's IP address or hostname
+# - REMOTE_PORT: The port on the remote server that will forward to your Pi
+# - LOCAL_PORT: The port on your Pi to expose (typically 22 for SSH, 1194 for OpenVPN)
+# - MONITOR_PORT: Port for autossh to monitor the tunnel (must be unique and unused)
+#
+# Example Configuration:
+# - For SSH access: -R 10022:localhost:22 (remote port 10022 -> Pi's SSH port 22)
+# - For OpenVPN: -R 11194:localhost:1194 (remote port 11194 -> Pi's OpenVPN port 1194)
+#
+# How it works:
+# - The script runs in a continuous loop until the tunnel is successfully established
+# - If the connection fails, it waits 0.5 seconds before retrying
+# - autossh automatically reconnects if the tunnel drops
+# - The -M option monitors the connection on the specified port pair
+# - The -f option runs autossh in the background
+# - The -N option prevents command execution (just forwarding)
+# - The -T option disables pseudo-terminal allocation
+
+# Configuration
+REMOTE_USER="your_username"           # TODO: Replace with your remote server username
+REMOTE_HOST="your_remote_server.com"  # TODO: Replace with your remote server IP or hostname
+MONITOR_PORT=20000                    # Port for monitoring (use a high, unused port)
+REMOTE_PORT=xxx                       # TODO: Replace xxx with remote port (e.g., 10022)
+LOCAL_PORT=xxx                        # TODO: Replace xxx with local port (e.g., 22 for SSH, 1194 for OpenVPN)
+
+# Start the reverse tunnel with retry logic
+while true; do
+    command autossh -M ${MONITOR_PORT} -f -N -T ${REMOTE_USER}@${REMOTE_HOST} -R ${REMOTE_PORT}:localhost:${LOCAL_PORT}
+
+    # Check if autossh started successfully
+    [ $? -eq 0 ] && break || sleep 0.5
+done
+
+# Alternative one-liner format (if you prefer to customize directly):
+# while true; do command autossh -M 20000 -f -N -T username@remote_host -R xxx:localhost:xxx ; [ $? -eq 0 ] && break || sleep 0.5; done

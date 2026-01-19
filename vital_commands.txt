@@ -1,0 +1,75 @@
+# Vital Commands Reference
+# =========================
+# Quick reference for commonly used SSH, security, and system administration commands
+# for Raspberry Pi VPN server setup.
+
+# ============================================================================
+# SSH Key Management
+# ============================================================================
+
+# Generate a new SSH key pair (RSA 4096-bit recommended)
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+# Copy SSH public key to remote server (Method 1 - recommended)
+ssh-copy-id user@hostname.example.com
+
+# Copy SSH public key to remote server (Method 2 - manual, if ssh-copy-id doesn't work)
+cat ~/.ssh/id_rsa.pub | ssh <user>@<hostname> 'cat >> .ssh/authorized_keys && echo "Key copied"'
+
+# Copy SSH key from Raspberry Pi to Windows PC for backup or Git setup
+# Note: Replace 192.168.xxx.xxx with your actual Raspberry Pi IP address
+scp pi@192.168.xxx.xxx:/home/pi/.ssh/id_rsa.pub %userprofile%\dev\raspberry_ssh_keys
+
+# ============================================================================
+# Network Monitoring and Diagnostics
+# ============================================================================
+
+# Check which ports are currently listening on the system
+sudo lsof -i -P -n | grep LISTEN
+
+# Alternative: Use netstat to show listening ports
+# sudo netstat -tulpn | grep LISTEN
+
+# ============================================================================
+# Automatic Script Execution on Boot (Crontab)
+# ============================================================================
+
+# Get the full path of current directory (needed for crontab entries)
+pwd
+
+# Edit crontab to schedule tasks
+crontab -e
+
+# Add this line to crontab to run script on every reboot:
+# @reboot /home/pi/raspberry_reverse_setup/start_tunnel.sh
+
+# View current crontab entries
+# crontab -l
+
+# ============================================================================
+# Script Permissions
+# ============================================================================
+
+# Make a script executable (allows running with ./script_name.sh)
+chmod u+x script_name.sh
+
+# Alternative: Make executable for all users
+# chmod +x script_name.sh
+
+# ============================================================================
+# SSH Connection Management
+# ============================================================================
+
+# Copy SSH key to remote server (standard method)
+ssh-copy-id username@remote_host
+
+# ============================================================================
+# Notes and Reminders
+# ============================================================================
+
+# TODO: The following items need context/clarification:
+# - "port 127" - unclear context (SSH config? Local port?)
+# - "admin_client" - unclear purpose (username? command?)
+
+# These may be project-specific notes that should be expanded or removed.
+chmod u+x xxx.sh

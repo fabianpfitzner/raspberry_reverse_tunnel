@@ -1,0 +1,97 @@
+# PiVPN Commands and Configuration Reference
+# ============================================
+# Quick reference for PiVPN installation, configuration, and management commands.
+
+# ============================================================================
+# PiVPN Installation
+# ============================================================================
+
+# Install PiVPN using the official installation script
+curl -L https://install.pivpn.io | bash
+
+# Note: This script will guide you through an interactive setup process
+# Be prepared to configure:
+# - VPN protocol (OpenVPN or WireGuard)
+# - Port number and protocol type (TCP/UDP)
+# - DNS provider
+# - Public IP address or hostname
+
+# ============================================================================
+# PiVPN Management Commands
+# ============================================================================
+
+# Uninstall PiVPN completely
+pivpn -u
+# or
+pivpn uninstall
+
+# Add a new VPN client profile
+pivpn add
+
+# List all VPN clients
+pivpn list
+
+# Revoke a client's access
+pivpn revoke
+
+# Show currently connected clients
+pivpn clients
+
+# Display PiVPN debug information
+pivpn debug
+
+# Update PiVPN to the latest version
+pivpn update
+
+# ============================================================================
+# Network Configuration
+# ============================================================================
+
+# Server DNS/Hostname Configuration
+# Replace this with your actual remote server's public IP or DNS hostname
+# Example formats:
+# - DNS: your-server.example.com
+# - IP: 123.45.67.89
+# - Dynamic DNS: abc123.ddns.provider.com
+SERVER_DNS="your-server-hostname.example.com"  # TODO: Replace with your server address
+
+# ============================================================================
+# SSH Performance Optimization
+# ============================================================================
+
+# Edit SSH server configuration to improve connection speed
+sudo nano /etc/ssh/sshd_config
+
+# Add or modify this line to disable GSSAPI authentication
+# (GSSAPI can cause slow SSH connections if not properly configured)
+# Add this line to the file:
+# GSSAPIAuthentication no
+
+# After editing, restart SSH service:
+# sudo systemctl restart sshd
+
+# ============================================================================
+# Script Permissions
+# ============================================================================
+
+# Make any deployment or utility script executable
+chmod u+x deploy.sh
+
+# Apply to any shell script you create:
+# chmod u+x script_name.sh
+
+# ============================================================================
+# Additional Tips
+# ============================================================================
+
+# View OpenVPN service status
+# sudo systemctl status openvpn
+
+# View OpenVPN server logs
+# sudo journalctl -u openvpn -f
+
+# Test VPN connectivity from server side
+# ping 10.8.0.1  # Default OpenVPN gateway IP
+
+# Check active VPN connections
+# sudo cat /var/log/openvpn.log
