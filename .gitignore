@@ -1,0 +1,47 @@
+# Raspberry Pi VPN Server - Git Ignore File
+# ==========================================
+# This file prevents sensitive configuration files from being committed to version control
+
+# Configuration files with credentials
+wpa_supplicant.conf
+start_tunnel.sh
+
+# Environment and configuration files
+.env
+config.txt
+*.conf
+
+# SSH keys (never commit private keys!)
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+authorized_keys
+
+# OpenVPN profiles (may contain sensitive information)
+*.ovpn
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
